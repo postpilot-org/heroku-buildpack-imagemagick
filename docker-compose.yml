@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: heroku-im7-rsvg
+    volumes:
+      - ./shared:/shared
+    command: bash
+
