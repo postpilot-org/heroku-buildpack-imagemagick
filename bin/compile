@@ -84,4 +84,8 @@ mkdir -p $(dirname $PROFILE_PATH)
 echo "export PATH=$INSTALL_DIR/bin:\$PATH" >> $PROFILE_PATH
 echo "export LD_LIBRARY_PATH=$INSTALL_DIR/lib:\$LD_LIBRARY_PATH:/usr/local/lib" >> $PROFILE_PATH
 echo "export MAGICK_CONFIGURE_PATH=$INSTALL_DIR/etc/ImageMagick-7" >> $PROFILE_PATH
+echo "export PKG_CONFIG_PATH=$INSTALL_DIR/lib/pkgconfig:\$PKG_CONFIG_PATH" >> $PROFILE_PATH
+echo "export CPPFLAGS=-I$INSTALL_DIR/include" >> $PROFILE_PATH
+echo "export CFLAGS=-I$INSTALL_DIR/include" >> $PROFILE_PATH
+echo "export LDFLAGS=-L$INSTALL_DIR/lib" >> $PROFILE_PATH
 echo "-----> Done updating environment variables. All set for ImageMagick."
