@@ -82,11 +82,21 @@ echo "-----> Updating environment variables"
 PROFILE_PATH="$BUILD_DIR/.profile.d/imagemagick.sh"
 ACTUAL_INSTALL_PATH="$HOME/vendor/imagemagick"
 mkdir -p $(dirname $PROFILE_PATH)
+
+# Ensure PATH includes ImageMagick binaries
 echo "export PATH=$ACTUAL_INSTALL_PATH/bin:\$PATH" >> $PROFILE_PATH
 echo "export LD_LIBRARY_PATH=$ACTUAL_INSTALL_PATH/lib:\$LD_LIBRARY_PATH:/usr/local/lib" >> $PROFILE_PATH
-echo "export MAGICK_CONFIGURE_PATH=$ACTUAL_INSTALL_PATH/etc/ImageMagick-7" >> $PROFILE_PATH
+
+# Ensure pkg-config detects ImageMagick 7
 echo "export PKG_CONFIG_PATH=$ACTUAL_INSTALL_PATH/lib/pkgconfig:\$PKG_CONFIG_PATH" >> $PROFILE_PATH
-echo "export CPPFLAGS=-I$ACTUAL_INSTALL_PATH/include" >> $PROFILE_PATH
-echo "export CFLAGS=-I$ACTUAL_INSTALL_PATH/include" >> $PROFILE_PATH
+
+# Ensure compiler can find ImageMagick headers
+echo "export C_INCLUDE_PATH=$ACTUAL_INSTALL_PATH/include/ImageMagick-7:\$C_INCLUDE_PATH" >> $PROFILE_PATH
+echo "export CPPFLAGS=-I$ACTUAL_INSTALL_PATH/include/ImageMagick-7" >> $PROFILE_PATH
+echo "export CFLAGS=-I$ACTUAL_INSTALL_PATH/include/ImageMagick-7" >> $PROFILE_PATH
 echo "export LDFLAGS=-L$ACTUAL_INSTALL_PATH/lib" >> $PROFILE_PATH
+
+# Ensure MAGICK_HOME is set correctly
+echo "export MAGICK_HOME=$ACTUAL_INSTALL_PATH" >> $PROFILE_PATH
+
 echo "-----> Done updating environment variables. All set for ImageMagick."
