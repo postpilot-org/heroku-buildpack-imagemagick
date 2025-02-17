@@ -98,5 +98,6 @@ echo "export LDFLAGS=-L$ACTUAL_INSTALL_PATH/lib" >> $PROFILE_PATH
 
 # Ensure MAGICK_HOME is set correctly
 echo "export MAGICK_HOME=$ACTUAL_INSTALL_PATH" >> $PROFILE_PATH
+echo "export GEM_CONFIGURE_ARGS=--with-opt-dir=$ACTUAL_INSTALL_PATH" >> $PROFILE_PATH
 
 echo "-----> Done updating environment variables. All set for ImageMagick."
