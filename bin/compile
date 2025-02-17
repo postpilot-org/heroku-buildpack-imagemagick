@@ -100,4 +100,11 @@ echo "export LDFLAGS=-L$ACTUAL_INSTALL_PATH/lib" >> $PROFILE_PATH
 echo "export MAGICK_HOME=$ACTUAL_INSTALL_PATH" >> $PROFILE_PATH
 echo "export GEM_CONFIGURE_ARGS=--with-opt-dir=$ACTUAL_INSTALL_PATH" >> $PROFILE_PATH
 
+# Locate Bundler’s install path and remove all cached versions of rmagick
+if [ -d "$BUILD_DIR/vendor/bundle" ]; then
+  rm -rf $BUILD_DIR/vendor/bundle/ruby/*/gems/rmagick-*
+  rm -rf $BUILD_DIR/vendor/bundle/ruby/*/specifications/rmagick-*.gemspec
+fi
+bundle install
+
 echo "-----> Done updating environment variables. All set for ImageMagick."
