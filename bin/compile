@@ -105,6 +105,7 @@ if [ -d "$BUILD_DIR/vendor/bundle" ]; then
   rm -rf $BUILD_DIR/vendor/bundle/ruby/*/gems/rmagick-*
   rm -rf $BUILD_DIR/vendor/bundle/ruby/*/specifications/rmagick-*.gemspec
 fi
+source $PROFILE_PATH
 bundle install
 
 echo "-----> Done updating environment variables. All set for ImageMagick."
