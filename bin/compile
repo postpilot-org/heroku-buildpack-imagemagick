@@ -11,7 +11,12 @@ CACHE_DIR=$2
 VENDOR_DIR="$BUILD_DIR/vendor"
 INSTALL_DIR="$VENDOR_DIR/imagemagick"
 IMAGE_MAGICK_VERSION="${IMAGE_MAGICK_VERSION:-7.1.1-35}"
-CACHE_FILE="$CACHE_DIR/imagemagick-$IMAGE_MAGICK_VERSION.tar.gz"
+# Key the cache on the stack as well as the version. ImageMagick is compiled
+# from source and links against the stack's system libs (e.g. libtiff), so a
+# binary built on heroku-22 (libtiff.so.5) will not load on heroku-24
+# (libtiff.so.6). Without $STACK in the key, a stack change re-serves the old
+# binary from cache and breaks at runtime.
+CACHE_FILE="$CACHE_DIR/imagemagick-$IMAGE_MAGICK_VERSION-${STACK:-unknown}.tar.gz"
 
 if [ ! -f $CACHE_FILE ]; then
   # install imagemagick
@@ -34,8 +39,18 @@ if [ ! -f $CACHE_FILE ]; then
   cd $IMAGE_MAGICK_DIR
   export CPPFLAGS="-I$INSTALL_DIR/include"
   export LDFLAGS="-L$INSTALL_DIR/lib"
-  ./configure --prefix=$INSTALL_DIR --with-rsvg=yes --with-png=yes
+  # --with-tiff=yes forces configure to fail if TIFF headers are missing,
+  # instead of silently building a binary without TIFF support (the print
+  # pipeline renders TIFFs, so a TIFF-less binary is a worse, quieter failure).
+  ./configure --prefix=$INSTALL_DIR --with-rsvg=yes --with-png=yes --with-tiff=yes
   make && make install
+
+  # Verify the produced binary actually loads and has TIFF before it gets
+  # cached and shipped — belt-and-suspenders against a bad build.
+  if ! "$INSTALL_DIR/bin/magick" -version | grep -q tiff; then
+    echo "Error: ImageMagick built without TIFF support" | indent
+    exit 1
+  fi
   cd ..
   rm -rf $IMAGE_MAGICK_DIR
 
